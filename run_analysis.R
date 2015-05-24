@@ -1,4 +1,5 @@
 run_analysis = function(){
+    starttime<-proc.time()
     if (!file.exists("data")) {
         dir.create("data")
         print("Made data Dir")
@@ -8,6 +9,8 @@ run_analysis = function(){
         fileUrl<-("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip")
         download.file(fileUrl, destfile = "./data/Dataset.zip", method="curl")
         print("downloaded")
+        unzip("./data/Dataset.zip")
+        print("unzipped")
     }
     
     if (!file.exists("UCI HAR Dataset")){
@@ -65,6 +68,6 @@ run_analysis = function(){
     write.table(thinCast, "./data/dataOut.txt",row.names=FALSE)
     
     rm(thinData, thinMelt, thinCast, combData)
-    print(paste("Data processed on ", dateAnalyzed, ".", sep=""))
-    
+    print(paste("Data processed on ", dateAnalyzed, " with time:", sep=""))
+    print(proc.time()-starttime)
 }
