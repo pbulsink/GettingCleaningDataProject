@@ -3,25 +3,35 @@ run_analysis = function(){
         dir.create("data")
         print("Made data Dir")
     }
-    fileUrl<-("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip")
-    download.file(fileUrl, destfile = "./data/Dataset.zip", method="curl")
-    print("downloaded")
+    
+    if (!file.exists("data/Dataset.zip")) {
+        fileUrl<-("https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip")
+        download.file(fileUrl, destfile = "./data/Dataset.zip", method="curl")
+        print("downloaded")
+    }
+    
+    if (!file.exists("UCI HAR Dataset")){
+        unzip("./data/Dataset.zip")
+        print("unzipped")
+    }
+    
+    print("starting analysis")
     startDir<-getwd()
-    dateDownload<-date()
-    unzip("./data/Dataset.zip")
-    print("unzipped")
+    dateAnalyzed<-date()
     
     setwd("./UCI HAR Dataset/")
     trg_X<-read.table("./train/X_train.txt")
     trg_y<-read.table("./train/y_train.txt")
     trg_sub<-read.table("./train/subject_train.txt")
+    print("read training files")
     tst_X<-read.table("./test/X_test.txt")
     tst_y<-read.table("./test/y_test.txt")
     tst_sub<-read.table("./test/subject_test.txt")
+    print("read test files")
     cnames<-read.table("features.txt")
     factorsList <- read.table("./activity_labels.txt")
     setwd(startDir)
-    print("read files")
+    print("read extraneous files")
 
     colnames(trg_X)<-make.names(cnames$V2, unique=TRUE)
     colnames(tst_X)<-make.names(cnames$V2, unique=TRUE)
@@ -55,6 +65,6 @@ run_analysis = function(){
     write.table(thinCast, "./data/dataOut.txt",row.names=FALSE)
     
     rm(thinData, thinMelt, thinCast, combData)
-    print(paste("Data processed on ", dateDownload, ".", sep=""))
+    print(paste("Data processed on ", dateAnalyzed, ".", sep=""))
     
 }
